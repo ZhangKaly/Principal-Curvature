@@ -1,0 +1,244 @@
+{
+    "os": "Linux-4.15.0-194-generic-x86_64-with-glibc2.27",
+    "python": "3.10.4",
+    "heartbeatAt": "2023-03-20T19:33:29.155078",
+    "startedAt": "2023-03-20T19:33:21.292093",
+    "docker": null,
+    "cuda": "10.2.89",
+    "args": null,
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "git@github.com:ZhangKaly/sheaf-neural-network.git",
+        "commit": "055f7b1c80e5028eb8f58d3f62de531e68dc908d"
+    },
+    "email": "yanlei.zhang@mila.quebec",
+    "root": "/home/mila/y/yanlei.zhang/Research/sheaf-neural-network",
+    "host": "cn-a005",
+    "username": "yanlei.zhang",
+    "executable": "/home/mila/y/yanlei.zhang/.conda/envs/sheafnn/bin/python",
+    "cpu_count": 40,
+    "cpu_count_logical": 40,
+    "cpu_freq": {
+        "current": 2678.9326499999997,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3594.685,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2546.919,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2904.234,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3118.855,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2179.565,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.289,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3594.646,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2763.071,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2429.043,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2744.344,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2452.956,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2443.509,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2196.027,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2764.107,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2449.042,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2480.817,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2625.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2799.711,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2241.062,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2265.01,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2305.561,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2167.973,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2374.98,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2173.208,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3258.678,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3376.538,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2187.611,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3218.016,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2728.153,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3084.132,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2378.593,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2250.006,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2234.558,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2384.15,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3072.79,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2774.003,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2881.74,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3307.656,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3500.405,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2460.663,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "total": 1754.8885498046875,
+        "used": 75.77709197998047
+    },
+    "gpu": "Quadro RTX 8000",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "Quadro RTX 8000",
+            "memory_total": 51539607552
+        }
+    ],
+    "memory": {
+        "total": 377.56407928466797
+    }
+}
