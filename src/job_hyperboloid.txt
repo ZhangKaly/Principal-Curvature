@@ -1,0 +1,10 @@
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 0 --eval_id_end 100
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 100 --eval_id_end 200
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 200 --eval_id_end 300
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 300 --eval_id_end 400
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 400 --eval_id_end 500
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 500 --eval_id_end 600
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 600 --eval_id_end 700
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 700 --eval_id_end 800
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 800 --eval_id_end 900
+cd /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/src; /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/py39/bin/python hyperboloid.py --eval_id_start 900 --eval_id_end 1000
