@@ -128,19 +128,39 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Specify the range of evaluation IDs.")
     parser.add_argument("--eval_id_start", type=int, required=True, help="Starting ID for evaluation")
     parser.add_argument("--eval_id_end", type=int, required=True, help="Ending ID for evaluation")
+    parser.add_argument("--tau_ratio", type=float, required=True, help="Ratio of tau to be used for the curvature computation")
+    parser.add_argument("--if_generate_ellipsoid_cloud", type=bool, required=True, help="Whether to generate the ellipsoid cloud or not")
+    parser.add_argument("--num_points", type=int, required=False, default=5000, help="Number of points in the ellipsoid cloud")
+    parser.add_argument("--a", type=float, required=False, default=0.9, help="Semi-major axis")
+    parser.add_argument("--b", type=float, required=False, default=1.25, help="Semi-minor axis")
+    parser.add_argument("--c", type=float, required=False, default=0.9, help="Semi-minor axis")
     args = parser.parse_args()
     eval_id_start = args.eval_id_start
     eval_id_end = args.eval_id_end
+    tau_ratio = args.tau_ratio
+    if_generate_ellipsoid_cloud = args.if_generate_ellipsoid_cloud
+    num_points = args.num_points
+    a = args.a
+    b = args.b
+    c = args.c
+
+    print(f"a = {a}, b = {b}, c = {c}")
+
+    if if_generate_ellipsoid_cloud:
+        ellipsoid = generate_ellipsoid_cloud(a, b, c, num_points=num_points, seed=42)
+        savetxt(f'ellipsoid_cloud_ratio_{tau_ratio}.csv', ellipsoid, delimiter=',')
+    else:
+        ellipsoid = np.loadtxt(f'ellipsoid_cloud_ratio_{tau_ratio}.csv', delimiter=',')
 
     # ellipsoid = generate_ellipsoid_cloud(1, 2, 0.5, num_points=5000, seed=42)
     # savetxt('ellipsoid_cloud_ratio_4.csv', ellipsoid, delimiter=',')
-    ellipsoid = np.loadtxt('ellipsoid_cloud_ratio_4.csv', delimiter=',')
+    # ellipsoid = np.loadtxt('ellipsoid_cloud_ratio_4.csv', delimiter=',')
     # num_eval = int(len(ellipsoid)/5)
     # num_eval = 5000
     num_eval = eval_id_end - eval_id_start
     assert num_eval > 0
     assert eval_id_start >= 0
-    assert eval_id_end <= 5000
+    assert eval_id_end <= ellipsoid.shape[0]
     print(f"evaluating points {eval_id_start}~{eval_id_end}")
     # curvature = []
     # for i in tqdm(range(num_eval)):
@@ -153,7 +173,7 @@ if __name__ == "__main__":
     def compute_curvature_for_point(i):
         j = i + eval_id_start
         print(f"point {j} started.")
-        res = compute_curvature(ellipsoid, np.expand_dims(ellipsoid[j], axis=0), epsilon_PCA = 0.1, tau_ratio = 4)[1]
+        res = compute_curvature(ellipsoid, np.expand_dims(ellipsoid[j], axis=0), epsilon_PCA = 0.1, tau_ratio = tau_ratio)[1]
         print(f"point {j} finished.")
         return res
 
@@ -162,7 +182,7 @@ if __name__ == "__main__":
         curvature = [x for x in tqdm(executor.map(compute_curvature_for_point, range(num_eval)), total=num_eval)]
 
     v = np.array(curvature).T
-    savetxt(f'curvature_ellipsoid_ratio_4_from_{eval_id_start}_to_{eval_id_end}.csv', v, delimiter=',')
+    savetxt(f'curvature_ellipsoid_ratio_{tau_ratio}_from_{eval_id_start}_to_{eval_id_end}.csv', v, delimiter=',')
 
     # # Visualize the point cloud
     # cc = - v
