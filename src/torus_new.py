@@ -1,34 +1,27 @@
+import networkx as nx
+import matplotlib.pyplot as plt
 import numpy as np
+import torch
+import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 from tqdm import tqdm
+import pandas as pd
 from numpy import savetxt
-import pathlib
 
-def ellipsoid_ground_truth(point_cloud, a, b, c):
-    #point_cloud: N by 3 array
-    cur = []
-    for p in point_cloud:
-        k = 1 / (a **2 * b**2 * c**2 * (p[0]**2 / a**4 + p[1]**2 / b**4 + p[2]**2 / c**4) **2)
-        cur.append(k)
-    return cur
-
-def generate_ellipsoid_cloud(a, b, c, num_points = 5000, seed=42):
-    """Generate a random point on an ellipsoid defined by a,b,c"""
+def generate_torus_cloud(num_points = 5000, R = 3, r = 1, seed=42):
+    # Generate random angles for theta and phi
     np.random.seed(seed)
     theta = np.random.uniform(0, 2*np.pi, num_points)
-    v = np.random.rand(num_points)
-    phi = np.arccos(2.0 * v - 1.0)
-    sinTheta = np.sin(theta);
-    cosTheta = np.cos(theta);
-    sinPhi = np.sin(phi);
-    cosPhi = np.cos(phi);
-    rx = a * sinPhi * cosTheta;
-    ry = b * sinPhi * sinTheta;
-    rz = c * cosPhi;
-    ellipsoid = np.column_stack((rx, ry, rz))
-    K = ellipsoid_ground_truth(ellipsoid, a, b, c)
-    return ellipsoid, K
+    phi = np.random.uniform(0, 2*np.pi, num_points)
 
+    # Compute the torus points
+    x = (R + r * np.cos(phi)) * np.cos(theta)
+    y = (R + r * np.cos(phi)) * np.sin(theta)
+    z = r * np.sin(phi)
+
+    K = np.cos(phi)/(r * (R + r * np.cos(phi))) 
+
+    return np.column_stack((x, y, z)), K
 
 def sub_vectors_between(set_vectors, a, b):
     # this function selects a set of vectors whose entries are between a and b
@@ -44,8 +37,6 @@ def list_vector_of_index(set_vectors, list_indices):
     
     list_result_vectors = [np.array([set_vectors[i] for i in list_indices[j]]) for j in range(len(list_indices))]
     return list_result_vectors 
-
-
 
 def find_basis(point_cloud, x, epsilon_PCA = 0.1, dim = 2, tau_ratio = 1.5):
     #point_cloud: the manifold 
@@ -128,6 +119,7 @@ def compute_curvature(point_cloud, query_point, epsilon_PCA = 0.1, dim = 2, tau_
     
             
     return transport_maps, tensor_av         
+
     
 import argparse
 if __name__ == "__main__":
@@ -135,30 +127,23 @@ if __name__ == "__main__":
     parser.add_argument("--eval_id_start", type=int, required=True, help="Starting ID for evaluation")
     parser.add_argument("--eval_id_end", type=int, required=True, help="Ending ID for evaluation")
     parser.add_argument("--tau_ratio", type=float, required=True, help="Ratio of tau to be used for the curvature computation")
-    parser.add_argument("--if_generate_ellipsoid_cloud", type=bool, required=True, help="Whether to generate the ellipsoid cloud or not")
-    parser.add_argument("--num_points", type=int, required=False, default=5000, help="Number of points in the ellipsoid cloud")
-    parser.add_argument("--a", type=float, required=False, default=1.5, help="Semi-major axis")
-    parser.add_argument("--b", type=float, required=False, default=0.9, help="Semi-minor axis")
-    parser.add_argument("--c", type=float, required=False, default=0.9, help="Semi-minor axis")
-    parser.add_argument("--file_path", type=str, required=False, default='.', help="result path")
+    parser.add_argument("--if_generate_torus_cloud", type=bool, required=True, help="Whether to generate the torus cloud or not")
+    parser.add_argument("--num_points", type=int, required=False, default=5000, help="Number of points in the torus cloud")
+    parser.add_argument("--r", type=float, required=False, default=0.375, help="small radius")
+    parser.add_argument("--R", type=float, required=False, default=1, help="large radius")
     parser.add_argument("--seed", type=int, required=False, default=42, help="seed for random number generator")
     parser.add_argument("--epsilon_PCA", type=float, required=False, default=0.2, help="epsilon for PCA")
     args = parser.parse_args()
     eval_id_start = args.eval_id_start
     eval_id_end = args.eval_id_end
     tau_ratio = args.tau_ratio
-    if_generate_ellipsoid_cloud = args.if_generate_ellipsoid_cloud
+    if_generate_torus_cloud = args.if_generate_torus_cloud
     num_points = args.num_points
-    a = args.a
-    b = args.b
-    c = args.c
+    r = args.r
+    R = args.R
     seed = args.seed
     epsilon_PCA = args.epsilon_PCA
-    file_path = args.file_path
 
-    # make the directory for the result
-    pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
-    # print(f"a = {a}, b = {b}, c = {c}")
     # print all the arguments
     print("--------------")
     print("Parameters:")
@@ -166,20 +151,27 @@ if __name__ == "__main__":
         print(f"{arg}: {getattr(args, arg)}")
     print("--------------")
 
-
-    if if_generate_ellipsoid_cloud:
-        ellipsoid, K = generate_ellipsoid_cloud(a, b, c, num_points=num_points, seed=seed)
-        np.savetxt(file_path + f'/ellipsoid_cloud_ratio_{tau_ratio}.csv', ellipsoid, delimiter=',')
-        np.savetxt(file_path + f'/torus_K_ratio_{tau_ratio}.csv', K, delimiter=',')
-
+    if if_generate_torus_cloud:
+        torus, K = generate_torus_cloud(num_points=num_points, r=r, R=R, seed=42)
+        np.savetxt(f'torus_cloud_ratio_{tau_ratio}.csv', torus, delimiter=',')
+        np.savetxt(f'torus_K_ratio_{tau_ratio}.csv', K, delimiter=',')
     else:
-        ellipsoid = np.loadtxt(file_path + f'/ellipsoid_cloud_ratio_{tau_ratio}.csv', delimiter=',')
+        torus = np.loadtxt(f'torus_cloud_ratio_{tau_ratio}.csv', delimiter=',')
 
+    # torus = generate_torus_cloud(1, 2, 0.5, num_points=5000, seed=42)
+    # savetxt('torus_cloud_ratio_4.csv', torus, delimiter=',')
+    # torus = np.loadtxt('torus_cloud_ratio_4.csv', delimiter=',')
+    # num_eval = int(len(torus)/5)
+    # num_eval = 5000
     num_eval = eval_id_end - eval_id_start
     assert num_eval > 0
     assert eval_id_start >= 0
-    assert eval_id_end <= ellipsoid.shape[0]
+    assert eval_id_end <= torus.shape[0]
     print(f"evaluating points {eval_id_start}~{eval_id_end}")
+    # curvature = []
+    # for i in tqdm(range(num_eval)):
+    #     a, b = compute_curvature(torus, np.expand_dims(torus[i], axis=0), epsilon_PCA = 0.1, tau_ratio = 4)
+    #     curvature.append(b)
 
     ## run in parallel
     from concurrent.futures import ProcessPoolExecutor
@@ -187,12 +179,34 @@ if __name__ == "__main__":
     def compute_curvature_for_point(i):
         j = i + eval_id_start
         print(f"point {j} started.")
-        res = compute_curvature(ellipsoid, np.expand_dims(ellipsoid[j], axis=0), epsilon_PCA = epsilon_PCA, tau_ratio = tau_ratio)[1]
+        res = compute_curvature(torus, np.expand_dims(torus[j], axis=0), epsilon_PCA = epsilon_PCA, tau_ratio = tau_ratio)[1]
         print(f"point {j} finished.")
         return res
 
     with ProcessPoolExecutor() as executor:
+        # curvature = list(tqdm(executor.map(compute_curvature_for_point, range(num_eval)), total=num_eval))
         curvature = [x for x in tqdm(executor.map(compute_curvature_for_point, range(num_eval)), total=num_eval)]
 
     v = np.array(curvature).T
-    np.savetxt(file_path + f'/curvature_ellipsoid_ratio_{tau_ratio}_from_{eval_id_start}_to_{eval_id_end}.csv', v, delimiter=',')
+    savetxt(f'curvature_torus_ratio_{tau_ratio}_from_{eval_id_start}_to_{eval_id_end}.csv', v, delimiter=',')
+
+    # # Visualize the point cloud
+    # cc = - v
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # scatter = ax.scatter(torus[:num_eval, 0], torus[:num_eval, 1], torus[:num_eval, 2], s=2, c = cc)
+    # #ax.set_title("Curvature on torus point cloud")
+    # ax.view_init(45, 0)
+    # plt.axis('off')
+    # ax.set_aspect('equal')
+    # plt.savefig("torus_ratio_4.png", dpi = 300)
+
+
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # scatter = ax.scatter(torus[:num_eval, 0], torus[:num_eval, 1], torus[:num_eval, 2], s=2, c = cc)
+    # #ax.set_title("Curvature on torus point cloud")
+    # ax.view_init(90, 0)
+    # plt.axis('off')
+    # ax.set_aspect('equal')
+    # plt.savefig("torus_birdview_ratio_4.png", dpi = 300)

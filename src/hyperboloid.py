@@ -7,16 +7,17 @@ from sklearn.neighbors import NearestNeighbors
 from tqdm import tqdm
 import pandas as pd
 
-def generate_hyperboloid_cloud(a, b, c, num_points=5000):
+from curvatures import generate_hyperboloid_cloud
+# def generate_hyperboloid_cloud(a, b, c, num_points=5000):
     
-    u = np.random.uniform(-2,2,num_points)
-    v = np.random.uniform(0, 2 * np.pi, num_points)
+#     u = np.random.uniform(-2,2,num_points)
+#     v = np.random.uniform(0, 2 * np.pi, num_points)
 
-    x = a*np.cosh(u)*np.cos(v)
-    y = b*np.cosh(u)*np.sin(v)
-    z = c*np.sinh(u)
+#     x = a*np.cosh(u)*np.cos(v)
+#     y = b*np.cosh(u)*np.sin(v)
+#     z = c*np.sinh(u)
 
-    return np.column_stack((x, y, z))
+#     return np.column_stack((x, y, z))
 
 def sub_vectors_between(set_vectors, a, b):
     # this function selects a set of vectors whose entries are between a and b
