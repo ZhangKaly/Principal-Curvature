@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
+## TODO convert to numpy as much as possible.
 def sub_vectors_between(set_vectors, a, b):
     # this function selects a set of vectors whose entries are between a and b
     
@@ -55,10 +56,20 @@ def find_basis(point_cloud, x, epsilon_PCA = 0.1, dim = 2, tau_ratio = 1.5):
     
     
     #list_D_i = [np.diag(np.sqrt(np.exp(- np.array(distances_epsilon[i]) ** 2 / epsilon_PCA))) for i in range(num)]
+    ## TODO remove for loop
     list_D_i = [np.diag(np.sqrt(np.exp( - 5 * np.array(distances_epsilon[i]) ** 2 / epsilon_PCA))) for 
                 i in range(num)]
+
+    """
+    Optimized:
+    """
+    # dist_arr_i = np.array([distances_epsilon[i] for i in range(num)])
+    """"""
+
+    ## TODO remove for loop
     list_B_i = [list_X_i[j].T @ list_D_i[j] for j in range(num)]
     O = []
+    ## TODO don't do full svd
     for q in range(num):
         U, S, VT = np.linalg.svd(list_B_i[q], full_matrices = False)
         O_i = U[:dim, :]
@@ -71,6 +82,7 @@ def compute_curvature(point_cloud, query_point, epsilon_PCA = 0.1, dim = 2, tau_
     ep_neighbor, tau_neighbor, tau_epsilon_neighbor, O = find_basis(point_cloud, query_point, epsilon_PCA = epsilon_PCA, dim = dim, tau_ratio = tau_ratio)
     
     transport_maps = np.zeros((len(tau_neighbor), len(tau_neighbor), dim, dim))
+    # TODO 1. nested for loop 2. svd
     for i in range(len(tau_neighbor)):
         for j in range(len(tau_neighbor)):
             U, S, VT = np.linalg.svd(O[i] @ O[j].T, full_matrices = False)
@@ -79,6 +91,7 @@ def compute_curvature(point_cloud, query_point, epsilon_PCA = 0.1, dim = 2, tau_
             
     tensor_av = []
 
+    ## TODO 1. repeated v_init 2. nested for loop
     O_init = O[0]
     for i in np.arange(1, len(tau_neighbor)):
         for j in np.arange(i + 1, len(tau_neighbor)):

@@ -9,6 +9,7 @@ def ellipsoid_ground_truth(point_cloud, a, b, c):
         cur.append(k)
     return cur
 
+## PROBLEMETIC.
 def hyperboloid_ground_truth(point_cloud, a, b, c):
     #point_cloud: N by 3 array
     cur = []
@@ -17,6 +18,14 @@ def hyperboloid_ground_truth(point_cloud, a, b, c):
         cur.append(k)
     return cur
         
+def hyperboloid_ground_truth_a_eql_b(point_cloud, a, c):
+    #point_cloud: N by 3 array
+    cur = []
+    for p in point_cloud:
+        k = - c **6 / (c **4 + a**2 * p[2]**2 + c**2 * p[2]**2) **2
+        cur.append(k)
+    return cur
+
 def generate_torus_cloud(num_points = 5000, R = 3, r = 1, seed=42):
     # Generate random angles for theta and phi
     np.random.seed(seed)
