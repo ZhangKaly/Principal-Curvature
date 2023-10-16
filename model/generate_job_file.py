@@ -18,6 +18,7 @@ num = int(config['SETTINGS']['num'])
 total_n = int(config['SETTINGS']['total_n'])
 tau_ratio = int(config['SETTINGS']['tau_ratio'])
 if_generate_cloud = config['SETTINGS']['if_generate_cloud'].lower() == 'true'
+noise = float(config['SETTINGS']['noise'])
 file_path = config['SETTINGS']['file_path']
 mfd_type = config['SETTINGS']['mfd_type']
 a = float(config['SETTINGS']['a'])
@@ -35,14 +36,14 @@ wd = os.getcwd()
 content = ""
 for i in range(num):
     end = start + int(total_n/num)
-    content += f"cd {wd}; {pythond} main.py --eval_id_start {start} --eval_id_end {end} --tau_ratio {tau_ratio} --if_generate_cloud {if_generate_cloud}  --num_points {total_n} --file_path {file_path} --manifold_type {mfd_type} --a {a} --b {b} --c {c} --r {r} --R {R} --seed {seed} --epsilon_PCA {epsilon_PCA} --tau_ratio {tau_ratio}\n"
+    content += f"cd {wd}; {pythond} main.py --eval_id_start {start} --eval_id_end {end} --tau_ratio {tau_ratio} --if_generate_cloud {if_generate_cloud}  --num_points {total_n} --file_path {file_path} --manifold_type {mfd_type} --a {a} --b {b} --c {c} --r {r} --R {R} --seed {seed} --epsilon_PCA {epsilon_PCA} --tau_ratio {tau_ratio} --noise {noise}\n"
     start = end
 
 with open(f'{job_file}.txt', 'w') as f:
     # Write the string to the file
     f.write(content)
 
-content_init = f"cd {wd}; {pythond} main.py --eval_id_start {start} --eval_id_end {end} --tau_ratio {tau_ratio} --if_generate_cloud {if_generate_cloud}  --num_points {total_n} --file_path {file_path} --manifold_type {mfd_type} --a {a} --b {b} --c {c} --r {r} --R {R} --seed {seed} --epsilon_PCA {epsilon_PCA} --tau_ratio {tau_ratio} --init True"
+content_init = f"cd {wd}; {pythond} main.py --eval_id_start {start} --eval_id_end {end} --tau_ratio {tau_ratio} --if_generate_cloud {if_generate_cloud}  --num_points {total_n} --file_path {file_path} --manifold_type {mfd_type} --a {a} --b {b} --c {c} --r {r} --R {R} --seed {seed} --epsilon_PCA {epsilon_PCA} --tau_ratio {tau_ratio} --init True --noise {noise}\n"
 
 with open(f'{job_file}_init.sh', 'w') as f:
     # Write the string to the file

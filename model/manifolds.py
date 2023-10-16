@@ -22,7 +22,9 @@ def hyperboloid_ground_truth_a_eql_b(point_cloud, a, c):
     #point_cloud: N by 3 array
     cur = []
     for p in point_cloud:
-        k = - c **6 / (c **4 + a**2 * p[2]**2 + c**2 * p[2]**2) **2
+        # k = - c **6 / (c **4 + a**2 * p[2]**2 + c**2 * p[2]**2) **2
+        u = p[2] / c
+        k = - c**2 / np.square(c**2 + (a**2 + c**2) * np.square(u))
         cur.append(k)
     return cur
 

@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_argument("--tau_ratio", type=float, required=True, help="Ratio of tau to be used for the curvature computation")
 
     parser.add_argument("--init", type=str, required=False, default=False, help="if true do not compute curvature")
+    parser.add_argument("--noise", type=float, required=True, default=0.0, help="std of Gaussian noise to be added to the point cloud")
 
     args = parser.parse_args()
     eval_id_start = args.eval_id_start
@@ -54,6 +55,9 @@ if __name__ == "__main__":
     # make the directory for the result
     pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
     init = args.init
+    if init:
+        if_generate_cloud = True
+    noise = args.noise
     # print all the arguments
     print("--------------")
     print("Parameters:")
@@ -62,7 +66,10 @@ if __name__ == "__main__":
     print("--------------")
 
     if if_generate_cloud:
-        point_cloud, K = generate_point_cloud(a=a, b=b, c=c, r=r, R=R, manifold_type=manifold_type, num_points=num_points, seed=42)
+        point_cloud_noiseless, K = generate_point_cloud(a=a, b=b, c=c, r=r, R=R, manifold_type=manifold_type, num_points=num_points, seed=42)
+        np.random.seed(seed)
+        point_cloud = point_cloud_noiseless + noise * np.random.multivariate_normal([0, 0, 0], np.identity(3), num_points)
+        np.savetxt(file_path + f'/point_cloud_noiseless.csv', point_cloud_noiseless, delimiter=',')
         np.savetxt(file_path + f'/point_cloud.csv', point_cloud, delimiter=',')
         np.savetxt(file_path + f'/K.csv', K, delimiter=',')
     else:
@@ -85,7 +92,7 @@ if __name__ == "__main__":
             print(f"point {j} finished.")
             return res
 
-        # with ProcessPoolExecutor() as executor:
+        with ProcessPoolExecutor() as executor:
             curvature = [x for x in tqdm(executor.map(compute_curvature_for_point, range(num_eval)), total=num_eval)]
 
         v = np.array(curvature).T
