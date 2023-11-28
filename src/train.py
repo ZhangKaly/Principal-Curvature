@@ -5,7 +5,9 @@ import pyrootutils
 import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
-from pytorch_lightning.loggers import LightningLoggerBase
+from pytorch_lightning.loggers import Logger
+import pandas as pd
+import os
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
@@ -52,14 +54,17 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
     log.info(f"Instantiating datamodule <{cfg.data._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
 
+    input_dim = datamodule.input_dim
+    num_classes = datamodule.num_classes
+
     log.info(f"Instantiating model <{cfg.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(cfg.model)
+    model: LightningModule = hydra.utils.instantiate(cfg.model, num_classes=num_classes, input_dim=input_dim)
 
     log.info("Instantiating callbacks...")
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
 
     log.info("Instantiating loggers...")
-    logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
+    logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
@@ -111,6 +116,9 @@ def main(cfg: DictConfig) -> Optional[float]:
         metric_dict=metric_dict, metric_name=cfg.get("optimized_metric")
     )
 
+    log_dir = hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
+    metric_dict = {k: v.item() for k,v in metric_dict.items()}
+    pd.DataFrame(metric_dict, index = [0]).to_csv(os.path.join(log_dir,"metrics.csv"))
     # return optimized metric
     return metric_value
 

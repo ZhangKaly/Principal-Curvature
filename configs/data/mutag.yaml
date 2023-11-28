@@ -1,0 +1,9 @@
+_target_: src.data.pl_datamodule.GeoDataPL
+data_dir: ${paths.data_dir}
+name: MUTAG
+batch_size: 32
+num_workers: 0
+seed: 421
+pre_transform: 
+  _target_: src.utils.path_transform.path_transform
+  _partial_: true
