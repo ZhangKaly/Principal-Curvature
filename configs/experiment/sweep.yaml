@@ -1,0 +1,7 @@
+# @package _global_
+
+
+hydra:
+  sweeper:
+    params:
+      data.seed: 421, 422, 423, 424, 425
