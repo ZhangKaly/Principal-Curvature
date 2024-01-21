@@ -149,3 +149,12 @@ configs/local/default.yaml
 /data/
 /logs/
 .env
+
+old/
+old2/
+old3/
+old4/
+model/
+src/ellipsoid/
+src/results
+*.png
