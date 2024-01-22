@@ -158,3 +158,11 @@ model/
 src/ellipsoid/
 src/results
 *.png
+*.out
+*.tsv
+dsq-*
+job-*
+dsq_submit.sh
+job_sweep.txt
+outputs
+wandb

@@ -1,0 +1,19 @@
+project: sheaf_curvature
+program: experiments.py
+command:
+  - /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/mioflow/bin/python
+  - ${program}
+  - ${args_no_hyphens}
+method: grid  # or 'random', 'bayes'
+metric:
+  name: R2
+  goal: maximize
+parameters:
+  method.name:
+    values: ['dc', 'ab']
+  path.name:
+    values: ['torus', 'hyperboloid', 'ellipsoid']
+  path.noise:
+    values: ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5']
+  logger.use_wandb:
+    values: [True]
