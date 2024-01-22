@@ -1,0 +1,24 @@
+project: sheaf_curvature
+program: experiments.py
+command:
+  - /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/.conda_envs/mioflow/bin/python
+  - ${program}
+  - ${args_no_hyphens}
+method: grid  # or 'random', 'bayes'
+metric:
+  name: R2
+  goal: maximize
+parameters:
+  method.name:
+    values: ['ours']
+  path.name:
+    values: ['torus', 'hyperboloid', 'ellipsoid']
+  path.noise:
+    values: ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5']
+  our_param.epsilon_PCA:
+    values: [0.2, 0.4, 0.6]
+  our_param.tau_radius:
+    values: [1, 2]
+  our_param.max_min_num:
+    values: [100, 150, 0.05, 0.1]
+  

@@ -59,20 +59,31 @@ def find_basis(point_cloud, x,  extrin_dim = 3, epsilon_PCA = 0.1, tau_radius = 
     
         
 def compute_sectional_curvature(point_cloud, query_point, extrin_dim = 3, 
-                                epsilon_PCA = 0.1, tau_radius = 0.4, max_min_num = 10):
+                                epsilon_PCA = 0.1, tau_radius = 0.4, max_min_num = 10, use_cross=False):
     
     tau_nbrs, O = find_basis(point_cloud, query_point, extrin_dim = extrin_dim,
                              epsilon_PCA = epsilon_PCA, tau_radius = tau_radius)
-            
-    tensor_all = []
-    for i in np.arange(1, len(tau_nbrs)):
-        tensor = 2 * (sum(O[2] *  (tau_nbrs[i] - tau_nbrs[0])))/np.linalg.norm(tau_nbrs[i] - tau_nbrs[0])**2
-        tensor_all.append(tensor)
-        
 
-    max_cur = sum(sorted(tensor_all, reverse=True)[:max_min_num])/max_min_num
-    
-    min_cur = sum(sorted(tensor_all)[:max_min_num])/max_min_num
+    if use_cross:
+        O2 = np.cross(O[0], O[1])
+    else:
+        O2 = O[2]
+
+    ti = tau_nbrs[1:] - tau_nbrs[0]
+    norms = np.square(ti).sum(axis=1)
+    tensor_all = 2 * (O2 * ti).sum(axis=1) / norms
+    # tensor_all = []
+    # for i in np.arange(1, len(tau_nbrs)):
+    #     tensor = 2 * (sum(O2 *  (tau_nbrs[i] - tau_nbrs[0])))/np.linalg.norm(tau_nbrs[i] - tau_nbrs[0])**2
+    #     tensor_all.append(tensor)
+
+    if max_min_num < 1:
+        min_quantile = max_min_num
+        max_cur = np.quantile(tensor_all, 1-min_quantile)
+        min_cur = np.quantile(tensor_all, min_quantile)
+    else:
+        max_cur = sum(sorted(tensor_all, reverse=True)[:max_min_num])/max_min_num    
+        min_cur = sum(sorted(tensor_all)[:max_min_num])/max_min_num
     
     return max_cur * min_cur
 

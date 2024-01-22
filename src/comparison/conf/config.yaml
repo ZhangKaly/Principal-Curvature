@@ -1,0 +1,20 @@
+logger:
+  use_wandb: True
+  entity: xingzhis
+  project: "sheaf_curvature"
+  tags: ['default']
+
+method:
+  name: ours
+
+our_param:
+  epsilon_PCA: 0.2
+  tau_radius: 1
+  max_min_num: 100
+  min_quantile: 0.05
+  use_cross: true
+
+path:
+  root: /gpfs/gibbs/pi/krishnaswamy_smita/xingzhi/sheaf-neural-network/
+  name: 'torus'
+  noise: 0.0
