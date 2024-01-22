@@ -20,6 +20,12 @@ from omegaconf import DictConfig, OmegaConf
 
 import pathlib
 
+def get_non_na(our_curvature, gt_curvature):
+    non_na_pos = ~np.isnan(our_curvature)
+    our_curvature = our_curvature[non_na_pos]
+    gt_curvature = gt_curvature[non_na_pos]
+    return our_curvature, gt_curvature
+
 def compute_curvatures(point_cloud, gt_curvature, epsilon_PCA=0.2, tau_radius=1, max_min_num=100, use_cross=False):
     gt_curvature = np.array(gt_curvature)
     num_eval = int(len(point_cloud))
@@ -214,21 +220,16 @@ def main(cfg: DictConfig):
             wandb.log({'R2': r2_score(gt_curvature, dc_curvature)})
             wandb.log({'curvature': dc_curvature.tolist()})
     elif cfg.method.name == 'ours':
-        try:
-            our_curvature = run_ours(point_cloud, epsilon_PCA=cfg.our_param.epsilon_PCA, tau_radius=cfg.our_param.tau_radius, max_min_num=cfg.our_param.max_min_num, use_cross=cfg.our_param.use_cross)
-            # np.save(f"{data_path}/our_curvature.npy", our_curvature)
-            if cfg.logger.use_wandb:
-                wandb.log({'coef': np.corrcoef(our_curvature, gt_curvature)[0, 1]})
-                wandb.log({'rmse': np.sqrt(np.mean((our_curvature - gt_curvature)**2))})
-                wandb.log({'R2': r2_score(gt_curvature, our_curvature)})
-                wandb.log({'curvature': our_curvature.tolist()})
-        except IndexError:
-            print(f"Error in {data_path}")
-            if cfg.logger.use_wandb:
-                wandb.log({'coef': np.nan})
-                wandb.log({'rmse': np.nan})
-                wandb.log({'R2': np.nan})
-                wandb.log({'curvature': np.nan})
+        our_curvature = run_ours(point_cloud, epsilon_PCA=cfg.our_param.epsilon_PCA, tau_radius=cfg.our_param.tau_radius, max_min_num=cfg.our_param.max_min_num, use_cross=cfg.our_param.use_cross)
+        # np.save(f"{data_path}/our_curvature.npy", our_curvature)
+        if cfg.logger.use_wandb:
+            wandb.log({'curvature': our_curvature.tolist()})
+            non_na_percent = np.mean(~np.isnan(our_curvature))
+            wandb.log({'non_na_percent': non_na_percent})
+            our_curvature, gt_curvature = get_non_na(our_curvature, gt_curvature)
+            wandb.log({'coef': np.corrcoef(our_curvature, gt_curvature)[0, 1]})
+            wandb.log({'rmse': np.sqrt(np.mean((our_curvature - gt_curvature)**2))})
+            wandb.log({'R2': r2_score(gt_curvature, our_curvature)})
 
     if cfg.logger.use_wandb:
         run.finish()
