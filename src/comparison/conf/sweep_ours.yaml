@@ -20,5 +20,6 @@ parameters:
   our_param.tau_radius:
     values: [1, 2]
   our_param.max_min_num:
-    values: [100, 150, 0.05, 0.1]
+    # values: [100, 150, 0.05, 0.1]
+    values: [200]
   
